@@ -1,0 +1,36 @@
+{
+    "folders": [
+        {
+            "name": "📦 Anchoring API (root)",
+            "path": "."
+          },
+          {
+            "name": "🌐 Frontend (Next.js)",
+            "path": "./services/frontend"
+          },
+          {
+            "name": "🚀 API Service",
+            "path": "./services/api"
+          },
+          {
+            "name": "👷 Worker Service",
+            "path": "./services/worker"
+          },
+          {
+            "name": "☸️ Kubernetes Config",
+            "path": "./infrastructure/kubernetes"
+          }
+    ],
+    "settings": {
+        "[typescript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "search.exclude": {
+            "**/node_modules": true,
+            "**/bower_components": true,
+            "**/*.code-search": true,
+            "**/dist": true,
+            "**/venv": true
+        }
+    }
+}
