@@ -1,4 +1,5 @@
-.env
+**/.env
 .cursorrules
 CLAUDE.md
 *.code-workspace
+!**/.env.EXAMPLE
