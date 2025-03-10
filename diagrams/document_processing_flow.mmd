@@ -1,0 +1,45 @@
+sequenceDiagram
+    participant GHA as GitHub Action
+    participant API as FastAPI Service
+    participant AUTH as Auth Service
+    participant RMQ as RabbitMQ
+    participant DW as Document Worker
+    participant EW as Embedding Worker
+    participant QD as Qdrant
+    participant PG as PostgreSQL
+    participant RED as Redis
+    
+    GHA->>API: POST /api/v1/documents
+    Note right of GHA: Includes API key in header
+    
+    API->>AUTH: Validate API key
+    AUTH->>RED: Check key cache
+    RED-->>AUTH: Return key data
+    AUTH-->>API: Authorization result
+    
+    API->>PG: Log documentation submission
+    API->>RMQ: Send to document.events exchange
+    API-->>GHA: 202 Accepted
+    
+    Note right of RMQ: Asynchronous processing begins
+    
+    RMQ->>DW: Route to ingestion.queue
+    DW->>DW: Parse documentation
+    Note right of DW: Extract sections, code<br/>examples, and metadata
+    DW->>PG: Update processing status
+    DW->>RMQ: Send to embedding.queue
+    
+    RMQ->>EW: Route to embedding worker
+    EW->>EW: Generate embeddings
+    Note right of EW: Create vector representations<br/>of text chunks
+    EW->>QD: Store vectors and document chunks
+    EW->>PG: Update indexed status
+    
+    Note over GHA,PG: Documentation is now available for AI vendor queries
+    
+    rect rgb(240, 240, 200)
+    alt Error occurs during processing
+        DW->>PG: Log error details
+        DW->>RMQ: Send to dead letter queue
+    end
+    end

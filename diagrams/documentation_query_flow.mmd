@@ -1,0 +1,13 @@
+sequenceDiagram
+    AI Tool->>API: GET /api/v1/query?library=X&version=Y
+    API->>Auth Service: Validate API key
+    API->>Redis: Check query cache
+    Alt Cache hit
+        Redis-->>API: Return cached results
+    else Cache miss
+        API->>Qdrant: Vector search
+        Qdrant-->>API: Return relevant documentation
+        API->>Redis: Cache results
+    end
+    API->>PostgreSQL: Log usage for billing
+    API-->>AI Tool: Return documentation

@@ -1,0 +1,33 @@
+graph TB
+    subgraph "Internet"
+        USER["Users/Clients"]
+    end
+    
+    subgraph "Cloudflare"
+        DNS["Cloudflare DNS"]
+        CF_SSL["Cloudflare SSL"]
+        CF_PROXY["Cloudflare Proxy/CDN"]
+    end
+    
+    subgraph "AWS"
+        subgraph "Amazon EKS"
+            CERT_MAN["cert-manager<br/>Pod"]
+            INGRESS["AWS Load Balancer<br/>Controller"]
+            
+            subgraph "Services"
+                ROOT_SVC["Frontend Service<br/>(anchoring.io)"]
+                API_SVC["API Service<br/>(api.anchoring.io)"]
+            end
+        end
+    end
+    
+    USER --> DNS
+    DNS --> CF_SSL
+    CF_SSL --> CF_PROXY
+    
+    CF_PROXY -->|"HTTPS Traffic"| INGRESS
+    
+    CERT_MAN -->|"Manages Certs"| INGRESS
+    
+    INGRESS --> ROOT_SVC
+    INGRESS --> API_SVC

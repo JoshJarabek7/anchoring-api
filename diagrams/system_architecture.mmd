@@ -1,0 +1,84 @@
+graph TD
+    %% Define main components with better spacing and font sizes
+    subgraph ClientLayer["Client Layer"]
+        GHA["GitHub Actions<br/><i>Documentation Updates</i>"]
+        AIV["AI Vendors<br/><i>Query API</i>"]
+        DEV["Developers<br/><i>Web Dashboard</i>"]
+    end
+
+    subgraph Frontend["Frontend"]
+        UI["Next.js Frontend<br/><i>Dashboard</i>"]
+    end
+
+    subgraph APILayer["API Layer"]
+        API["FastAPI Application"]
+        API --> AUTH["Authentication<br/>Service"]
+        API --> DOC["Documentation<br/>Service"]
+        API --> QRY["Query<br/>Service"]
+        API --> BIL["Analytics & Billing<br/>Service"]
+    end
+
+    subgraph MessageQueue["Message Queue"]
+        RMQ["RabbitMQ"]
+        subgraph RMQTopology["RMQ Topology"]
+            DOC_EX["Documentation Events<br/><i>Exchange</i>"]
+            ING_Q["Ingestion<br/><i>Queue</i>"]
+            EMB_Q["Embedding Generation<br/><i>Queue</i>"]
+            STR_Q["Storage<br/><i>Queue</i>"]
+        end
+    end
+
+    subgraph WorkerLayer["Processing Workers"]
+        WRKR1["Document Processor<br/>Workers"]
+        WRKR2["Embedding Generator<br/>Workers"]
+        WRKR3["Storage Workers"]
+    end
+
+    subgraph DatabaseLayer["Data Storage"]
+        PG["PostgreSQL<br/><i>Metadata & Auth</i>"]
+        QD["Qdrant<br/><i>Vector Database</i>"]
+        RED["Redis<br/><i>Caching</i>"]
+    end
+
+    subgraph K8sLayer["Kubernetes Orchestration"]
+        K8S["Kubernetes<br/>Control Plane"]
+    end
+
+    %% Frontend connections
+    DEV --> UI
+    UI --> API
+
+    %% External client connections
+    GHA --> API
+    AIV --> API
+
+    %% API to processing connections
+    API --> RMQ
+    API --> PG
+    API --> QD
+    API --> RED
+
+    %% Message Queue flow
+    DOC_EX --> ING_Q
+    DOC_EX --> EMB_Q
+    DOC_EX --> STR_Q
+
+    %% Worker connections
+    RMQ --> WRKR1
+    RMQ --> WRKR2
+    RMQ --> WRKR3
+    WRKR1 --> PG
+    WRKR2 --> QD
+    WRKR3 --> QD
+    WRKR3 --> PG
+
+    %% Kubernetes orchestration
+    K8S --> API
+    K8S --> UI
+    K8S --> RMQ
+    K8S --> WRKR1
+    K8S --> WRKR2
+    K8S --> WRKR3
+    K8S --> PG
+    K8S --> QD
+    K8S --> RED

@@ -1,0 +1,84 @@
+graph LR
+    %% Define main components with proper spacing and color schemes
+    subgraph EC2Instance["AWS EC2 Instance"]
+        
+        subgraph K8s["Kubernetes Cluster"]
+            
+            subgraph APINamespace["API Namespace"]
+                API["API Pods"]
+                API_SVC["API Service"]
+                API --> API_SVC
+            end
+            
+            subgraph FrontendNamespace["Frontend Namespace"]
+                UI["Frontend Pods"]
+                UI_SVC["Frontend Service"]
+                UI --> UI_SVC
+            end
+            
+            subgraph WorkerNamespace["Worker Namespace"]
+                DOC_WORKER["Document<br/>Worker Pods"]
+                EMB_WORKER["Embedding<br/>Worker Pods"]
+                STR_WORKER["Storage<br/>Worker Pods"]
+            end
+            
+            subgraph DatabaseNamespace["Database Namespace"]
+                PG["PostgreSQL<br/>StatefulSet"]
+                QD["Qdrant<br/>StatefulSet"]
+                RED["Redis<br/>StatefulSet"]
+                
+                PG_SVC["PostgreSQL Service"]
+                QD_SVC["Qdrant Service"]
+                RED_SVC["Redis Service"]
+                
+                PG --> PG_SVC
+                QD --> QD_SVC
+                RED --> RED_SVC
+                
+                PG_VOL["PostgreSQL PV"]
+                QD_VOL["Qdrant PV"] 
+                RED_VOL["Redis PV"]
+                
+                PG --> PG_VOL
+                QD --> QD_VOL
+                RED --> RED_VOL
+            end
+            
+            subgraph QueueNamespace["Queue Namespace"]
+                RMQ["RabbitMQ<br/>StatefulSet"]
+                RMQ_SVC["RabbitMQ Service"]
+                RMQ --> RMQ_SVC
+                RMQ_VOL["RabbitMQ PV"]
+                RMQ --> RMQ_VOL
+            end
+            
+            subgraph IngressControl["Ingress"]
+                ING["NGINX Ingress<br/>Controller"]
+            end
+            
+            %% Services connections
+            ING --> API_SVC
+            ING --> UI_SVC
+            
+            API_SVC --> PG_SVC
+            API_SVC --> QD_SVC
+            API_SVC --> RED_SVC
+            API_SVC --> RMQ_SVC
+            
+            DOC_WORKER --> RMQ_SVC
+            EMB_WORKER --> RMQ_SVC
+            STR_WORKER --> RMQ_SVC
+            
+            DOC_WORKER --> PG_SVC
+            EMB_WORKER --> QD_SVC
+            STR_WORKER --> PG_SVC
+            STR_WORKER --> QD_SVC
+        end
+    end
+    
+    %% External connections
+    INTERNET["Internet"]
+    INTERNET --> ING
+    
+    %% Add a title
+    %% title Kubernetes Deployment Architecture
