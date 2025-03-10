@@ -19,6 +19,14 @@
           {
             "name": "☸️ Kubernetes Config",
             "path": "./infrastructure/kubernetes"
+          },
+          {
+            "name": "🔨 Terraform Config",
+            "path": "./infrastructure/terraform"
+          },
+          {
+            "name": "🐋 Docker Config",
+            "path": "./infrastructure/docker"
           }
     ],
     "settings": {
