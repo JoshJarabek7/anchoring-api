@@ -1,0 +1,54 @@
+services:
+  api:
+    build: ./services/api
+    volumes:
+      - ./services/api:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./envs/.env.api
+    depends_on:
+      - postgres
+      - redis
+      - qdrant
+    
+  frontend:
+    build: ./services/frontend
+    volumes:
+      - ./services/frontend:/app
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./envs/.env.frontend
+  
+  worker:
+    build: ./services/worker
+    volumes:
+      - ./services/worker:/app
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./envs/.env.worker
+    
+  postgres:
+    image: postgres:17-alpine
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    env_file:
+      - ./env.postgres
+  
+  qdrant:
+    image: qdrant/qdrant:1.13.4
+    volumes:
+      - qdrant_data:/qdrant/storage
+    
+  redis:
+    image: redis:7
+    volumes:
+      - redis_data:/data
+
+volumes:
+  pg_data:
+  qdrant_data:
+  redis_data:
+    
