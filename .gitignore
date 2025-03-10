@@ -4,3 +4,4 @@ CLAUDE.md
 *.code-workspace
 !**/.env.*.EXAMPLE
 !**/.env.EXAMPLE
+**/.DS_Store

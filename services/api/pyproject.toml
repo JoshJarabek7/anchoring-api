@@ -1,0 +1,11 @@
+[project]
+name = "anchoring-api"
+version = "0.1.0"
+description = "API for Anchoring's Vector Search"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.115.11",
+    "pydantic[email]>=2.10.6",
+    "stripe>=11.6.0",
+]
