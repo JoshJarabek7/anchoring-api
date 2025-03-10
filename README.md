@@ -55,6 +55,9 @@ Our system follows a microservices architecture deployed on Kubernetes, with the
 
 ![Kubernetes Deployment Architecture](diagrams/png/kubernetes_deployment_architecture.png)
 
+### 4. Domain & SSL Architecture
+![Domain & SSL Architecture](diagrams/png/domain_and_ssl_architecture.png)
+
 ## 💾 Database Schema
 
 ### PostgreSQL Models
