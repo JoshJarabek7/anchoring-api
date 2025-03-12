@@ -1,51 +1,72 @@
 services:
   api:
-    build: ./services/api
+    build: ../../services/api
     volumes:
-      - ./services/api:/app
+      - ../../services/api:/app
     ports:
       - "8000:8000"
     env_file:
-      - ./envs/.env.api
+      - ../../envs/.env.api
     depends_on:
       - postgres
       - redis
       - qdrant
     
   frontend:
-    build: ./services/frontend
+    build:
+      context: ../../services/frontend
+      dockerfile: Dockerfile.dev
     volumes:
-      - ./services/frontend:/app
+      - ../../services/frontend/:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
+      - "3001:3001"
     env_file:
-      - ./envs/.env.frontend
+      - ../../envs/.env.frontend
+    stdin_open: true
+    tty: true
   
-  worker:
-    build: ./services/worker
-    volumes:
-      - ./services/worker:/app
-    ports:
-      - "8001:8001"
-    env_file:
-      - ./envs/.env.worker
+  # worker:
+  #   build: ./services/worker
+  #   volumes:
+  #     - ./services/worker:/app
+  #   ports:
+  #     - "8001:8001"
+  #   env_file:
+  #     - ./envs/.env.worker
     
   postgres:
     image: postgres:17-alpine
     volumes:
       - pg_data:/var/lib/postgresql/data
     env_file:
-      - ./env.postgres
+      - ../../envs/.env.postgres
   
   qdrant:
-    image: qdrant/qdrant:1.13.4
+    image: qdrant/qdrant:v1.13.4
     volumes:
       - qdrant_data:/qdrant/storage
+      - ../qdrant/config.yaml:/qdrant/config/config.yaml
+      - ../qdrant/tls:/qdrant/tls
+    ports:
+      - "6333:6333"  # HTTP API
+      - "6334:6334"  # gRPC API
+    env_file:
+      - ../../envs/.env.qdrant
+    healthcheck:
+      test: ["CMD", "curl", "-f", "--insecure", "-H", "api-key: 6pMVBCGlImZwMffDnTgOQVP17lc8iPDcm1qzBx2oS/4=", "https://localhost:6333/readiness"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     
   redis:
     image: redis:7
     volumes:
       - redis_data:/data
+    ports:
+      - "6379:6379"
 
 volumes:
   pg_data:

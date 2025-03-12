@@ -12,4 +12,6 @@ npx shadcn@latest add "https://magicui.design/r/bento-grid" \
     "https://magicui.design/r/hyper-text" \
     "https://magicui.design/r/line-shadow-text" \
     "https://magicui.design/r/terminal" \
+    "https://magicui.design/r/animated-gradient-text" \
+    "https://magicui.design/r/spinning-text" \
     --overwrite

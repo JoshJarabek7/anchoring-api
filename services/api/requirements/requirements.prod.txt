@@ -1,0 +1,9 @@
+pydantic[email]
+fastapi[standard]
+stripe
+workos
+pydantic-settings
+qdrant-client
+numpy
+openai
+modal

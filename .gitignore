@@ -6,3 +6,13 @@ CLAUDE.md
 !**/.env.EXAMPLE
 **/.DS_Store
 leaderboards/
+**/*__pycache__
+infrastructure/qdrant/tls/key.pem
+**/*.peminfrastructure/qdrant/tls/*.pem
+infrastructure/qdrant/config.yaml
+infrastructure/qdrant/tls/*.srl
+infrastructure/qdrant/tls/*.crt
+infrastructure/qdrant/tls/*.key
+infrastructure/qdrant/tls/*.csr
+infrastructure/qdrant/tls/
+.cache_ggshield

@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Anchoring API Frontend
 
-## Getting Started
+This is the frontend service for Anchoring API, built with:
 
-First, run the development server:
+- Next.js 15
+- React 19
+- TypeScript
+- TailwindCSS 4
+- ShadCN UI Components
+- MagicUI for interactive elements
+- WorkOS for authentication
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Development Setup
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Local Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository
+2. Navigate to the frontend directory: `cd services/frontend`
+3. Install dependencies: `npm install`
+4. Create a `.env.local` file with your WorkOS credentials:
+   ```
+   WORKOS_CLIENT_ID=client_xxxxxxxxxx
+   WORKOS_API_KEY=sk_test_xxxxxxxxx
+   WORKOS_COOKIE_PASSWORD=your_secure_32_char_password_here
+   NEXT_PUBLIC_WORKOS_REDIRECT_URI=http://localhost:3000/callback
+   ```
+5. Start the development server: `npm run dev`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Docker Development
 
-## Learn More
+The frontend service is configured to run in Docker as part of the complete Anchoring API stack:
 
-To learn more about Next.js, take a look at the following resources:
+1. Make sure to set up the environment variables in `envs/.env.frontend`:
+   ```
+   WORKOS_CLIENT_ID=client_xxxxxxxxxx
+   WORKOS_API_KEY=sk_test_xxxxxxxxx
+   WORKOS_COOKIE_PASSWORD=your_secure_32_char_password_here
+   NEXT_PUBLIC_WORKOS_REDIRECT_URI=http://localhost:3000/callback
+   ```
+2. Run the Docker Compose stack: `docker-compose -f infrastructure/docker/docker-compose.yml up -d`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Working with WorkOS AuthKit
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project uses WorkOS AuthKit for authentication. To make it work properly:
 
-## Deploy on Vercel
+1. Set up a WorkOS account at https://workos.com/
+2. Create an application in the WorkOS dashboard
+3. Configure the redirect URI in your WorkOS dashboard to match the one in your environment variables
+4. Configure your Client ID and API key in the environment variables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Testing AuthKit Locally
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To test WorkOS AuthKit locally without registering a real domain:
+
+1. Use localhost for your development environment
+2. Configure http://localhost:3000/callback as a valid redirect URI in your WorkOS dashboard
+3. Make sure your NEXT_PUBLIC_WORKOS_REDIRECT_URI is set to http://localhost:3000/callback
+
+## Project Structure
+
+- `/app`: Next.js app router pages
+- `/components`: UI components
+  - `/components/ui`: ShadCN UI components
+  - `/components/magicui`: Interactive UI elements with animations
+  - `/components/navigation`: Navigation components
+- `/lib`: Utility functions
+- `/public`: Static assets
+
+## Pages
+
+- `/`: Landing page
+- `/features`: Features page
+- `/pricing`: Pricing page
+- `/docs`: Documentation page
+- `/dashboard`: User dashboard (authenticated)
+- `/callback`: WorkOS authentication callback handler

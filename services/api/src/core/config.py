@@ -1,7 +1,7 @@
 """Configuration management."""
 
 from pydantic import PostgresDsn, AnyHttpUrl, model_validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -50,6 +50,13 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
 
     DB_ECHO: bool = False
+
+    # Configure to read from environment variables
+    model_config = SettingsConfigDict(
+        # Only read from environment variables (default behavior)
+        extra="ignore",
+        env_file=None,  # Explicitly disable .env file loading
+    )
 
 settings = Settings()
             
